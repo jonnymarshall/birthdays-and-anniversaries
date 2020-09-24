@@ -31,7 +31,7 @@ function App() {
     <div className="App">
       <p>{clientId}</p>
       <GoogleLogin
-        clientId="952301080115-odt17vabnr32itq23pir8357fdd81e9k.apps.googleusercontent.com"
+        clientId={clientId}
         buttonText="Login"
         onSuccess={responseGoogle}
         onFailure={responseGoogle}
