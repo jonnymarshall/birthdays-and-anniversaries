@@ -37,6 +37,12 @@ class App extends Component {
 
   render() {
     const people = this.state.people;
+
+    const sortedPeople = array.sort((person) => {
+      person.dob;
+      return c - d;
+    });
+
     const meDate = dayjs(people[2].dob);
     console.log(dayjs(meDate).format("MM") <= dayjs().format("MM"));
 
