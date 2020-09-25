@@ -1,14 +1,22 @@
 import { clientId } from "./secrets";
-import React, { useState } from "react";
-import logo from "./logo.svg";
+import React, { Component } from "react";
 import { GoogleLogin } from "react-google-login";
 import "./App.css";
+import people from "./data/people";
+import dayjs from "dayjs";
 
-function App() {
-  const googlePeopleUrl =
-    "https://people.googleapis.com/v1/people/me/connections?personFields=names,emailAddresses";
+class App extends Component {
+  constructor() {
+    super();
 
-  const getData = async (url, accessToken) => {
+    this.state = {
+      googlePeopleUrl:
+        "https://people.googleapis.com/v1/people/me/connections?personFields=names,emailAddresses",
+      people: people(),
+    };
+  }
+
+  getData = async (url, accessToken) => {
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -17,8 +25,8 @@ function App() {
     });
   };
 
-  const responseGoogle = ({ accessToken }) => {
-    getData(googlePeopleUrl, accessToken)
+  responseGoogle = ({ accessToken }) => {
+    this.getData(this.state.googlePeopleUrl, accessToken)
       .then((data) => {
         console.log(data); // JSON data parsed by `data.json()` call
       })
@@ -27,25 +35,33 @@ function App() {
       });
   };
 
-  return (
-    <div className="App">
-      <p>{clientId}</p>
-      <GoogleLogin
-        clientId={clientId}
-        buttonText="Login"
-        onSuccess={responseGoogle}
-        onFailure={responseGoogle}
-        cookiePolicy={"single_host_origin"}
-      />
-    </div>
-  );
+  render() {
+    const people = this.state.people;
+    const meDate = dayjs(people[2].dob);
+    console.log(dayjs(meDate).format("MM") <= dayjs().format("MM"));
+
+    return (
+      <div className="App">
+        {/* <GoogleLogin
+          clientId={clientId}
+          buttonText="Login"
+          onSuccess={responseGoogle}
+          onFailure={responseGoogle}
+          cookiePolicy={"single_host_origin"}
+        /> */}
+        {people.map(({ name, dob }) => {
+          return (
+            <div className="container">
+              <div className="c-person-card">
+                <h1>{name}</h1>
+                <h2>Date: {dayjs(dob.toDateString()).format("DD MMMM")}</h2>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
 }
 
 export default App;
-// Client ID
-// 762892394508-23fcllqa715aj6cqd7egf71r8sm3pp88.apps.googleusercontent.com
-
-// Client Secret
-// xZL5DJRFbmniMRpQbQVfkwbq
-
-// API Key AIzaSyBCq7FDBc8DsI7jLfI5p21FKlntS7gVHfo
